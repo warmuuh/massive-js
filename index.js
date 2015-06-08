@@ -10,6 +10,7 @@ var Args = require("args-js");
 var path = require("path");
 var deasync = require("deasync");
 
+
 var self;
 
 var Massive = function(args){
@@ -255,9 +256,7 @@ Massive.prototype.loadFunctions = function(next){
           var sql;
           var params = [];
 
-          for(var i = 1;i<=fn.param_count;i++){
-            params.push("$" + i);
-          }
+          
 
           var newFn, pushOnTo
           if(schema !== "public"){
@@ -271,10 +270,11 @@ Massive.prototype.loadFunctions = function(next){
             self[fn.name] = newFn;
           }
 
-          sql+="(" + params.join(",") + ")";
+          //sql+="(" + params.join(",") + ")";
           newFn.sql = sql;
           newFn.db = self;
           self.functions.push(newFn);
+          
         });
         next(null,self);
       }
@@ -299,9 +299,15 @@ var assignScriptAsFunction = function (rootObject, propertyName) {
     var sql = rootObject[propertyName].sql;
     var db = rootObject[propertyName].db;
     var params = _.isArray(args) ? args : [args];
-
+    
+    var paramsDef = [];
+    for(var i = 1;i<=params.length;i++){
+      paramsDef.push("$" + i);
+    }
+    var sqlAndParams = sql+"(" + paramsDef.join(",") + ")";
+    
     //execute the query on invocation
-    db.query(sql,params,{}, next);  
+    db.query(sqlAndParams,params,{}, next);  
   }
   return rootObject[propertyName];
 }
