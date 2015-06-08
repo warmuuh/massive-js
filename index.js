@@ -8,7 +8,7 @@ var Document = require("./lib/document");
 var ArgTypes = require("./lib/arg_types");
 var Args = require("args-js");
 var path = require("path");
-var deasync = require('deasync');
+var deasync = require("deasync");
 
 var self;
 
@@ -245,7 +245,7 @@ Massive.prototype.loadFunctions = function(next){
   if(!this.excludeFunctions)
   {
     var functionSql = __dirname + "/lib/scripts/functions.sql";
-    var parameters = [this.functionBlacklist];
+    var parameters = [this.allowedSchemas, this.functionBlacklist];
     this.executeSqlFile({file : functionSql, params : parameters}, function(err,functions){
       if(err){
         next(err,null);

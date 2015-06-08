@@ -12,7 +12,12 @@ where routines."routine_schema" not in ('pg_catalog','information_schema')
   and routines.routine_name not like 'pgp%'
   and
   (case -- blacklist functions using LIKE by fully-qualified name (no schema assumes public):
+    when $2 = '' 
+    then 1=1 
+    else replace((routines.routine_schema || '.'|| routines.routine_name), 'public.', '')  not like all(string_to_array(replace($2, ' ', ''), ',')) end)
+    and
+  (case -- schema whitelist
     when $1 = '' 
     then 1=1 
-    else replace((routines.routine_schema || '.'|| routines.routine_name), 'public.', '')  not like all(string_to_array(replace($1, ' ', ''), ',')) end)
+    else routines.routine_schema in (select unnest(string_to_array($1, ','))) end)
 order by routine_name;
