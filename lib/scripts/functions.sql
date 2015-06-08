@@ -19,5 +19,5 @@ where routines."routine_schema" not in ('pg_catalog','information_schema')
   (case -- schema whitelist
     when $1 = '' 
     then 1=1 
-    else routines.routine_schema in (select unnest(string_to_array($1, ','))) end)
+    else routines.routine_schema in (select unnest(string_to_array(replace($1, ' ', ''), ','))) end)
 order by routine_name;
