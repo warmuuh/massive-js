@@ -8,7 +8,7 @@ var Document = require("./lib/document");
 var ArgTypes = require("./lib/arg_types");
 var Args = require("args-js");
 var path = require("path");
-var deasync = require("deasync");
+
 
 
 var self;
@@ -334,14 +334,3 @@ exports.connect = function(args, next){
   });
 };
 
-exports.loadSync = function(args) { 
-  var done = false;
-  this.connect(args, function (err, res) { 
-    result = res;
-    done = true;
-  });
-  while(!done) { 
-    deasync.runLoopOnce();
-  }
-  return result;
-}
